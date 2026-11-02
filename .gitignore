@@ -1,0 +1,8 @@
+# 파이썬 가상환경 및 캐시 파일 제외
+backend/venv/
+__pycache__/
+*.pyc
+
+# 생성된 DB 파일 제외
+*.db
+.env
