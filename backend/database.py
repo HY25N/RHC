@@ -17,9 +17,19 @@ def init_db():
         deal_year INTEGER NOT NULL,
         deal_month INTEGER NOT NULL,
         deal_day INTEGER,
+        latitude REAL,      -- 위도 컬럼 추가
+        longitude REAL,     -- 경도 컬럼 추가
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     """)
+
+    # 테이블이 생성되어 있는 경우를 대비해 컬럼 추가 (ALTER TABLE)
+    try:
+        cursor.execute("ALTER TABLE real_estate_deals ADD COLUMN latitude REAL")
+        cursor.execute("ALTER TABLE real_estate_deals ADD COLUMN longitude REAL")
+    except sqlite3.OperationalError:
+        pass    # 컬럼이 존재하면 넘어가기
+
     conn.commit()
     conn.close()
 
@@ -44,7 +54,9 @@ def save_deals(deals):
             d["exclusive_area"],
             d["deal_year"],
             d["deal_month"],
-            d["deal_day"]
+            d["deal_day"],
+            d.get("latitude"),      # 좌표가 있으면 넣고 없으면 None
+            d.get("longitude")      # 좌표가 있으면 넣고 없으면 None
         ) for d in deals
     ]
     
@@ -54,3 +66,6 @@ def save_deals(deals):
     conn.close()
     
     return inserted_count
+
+if __name__ == "__main__":
+    init_db()
