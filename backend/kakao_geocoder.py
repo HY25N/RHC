@@ -48,7 +48,7 @@ def get_coordinates(address):
         return None, None
 
 def update_db_coordinates(db_path = "rhc_database.db"):
-    if not os.path.exists(db_path) and os.path.exists("backend'rhc_database.db"):
+    if not os.path.exists(db_path) and os.path.exists("backend/rhc_database.db"):
         db_path = "backend/rhc_database.db"
 
     conn = sqlite3.connect(db_path)
@@ -70,7 +70,8 @@ def update_db_coordinates(db_path = "rhc_database.db"):
     print(f"총 {len(rows)}건의 좌표 미등록 데이터 발견, 변활을 시작합니다...")
 
     for row_id, building_name in rows:
-        # 검색 정확도를 높이기 위한 지역명 조합
+        # TODO: 추후 전국 데이터 확장 시 '서울특별시 종로구' 하드코딩 제거
+        # -> DB의 시/도, 군/구, 동 (city, district, dong)을 함께 조회해서 f"{city} {district} {dong} {building_name}" 동적조합으로 수정
         search_query = f"서울특별시 종로구 {building_name}"
         lat, lng = get_coordinates(search_query)
 
