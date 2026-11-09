@@ -1,6 +1,10 @@
+import os
 import requests
 import xml.etree.ElementTree as ET
+from dotenv import load_dotenv
 from database import init_db, save_deals
+
+load_dotenv()
 
 def parse_real_estate_xml(xml_data):
     root = ET.fromstring(xml_data)
@@ -32,7 +36,7 @@ def parse_real_estate_xml(xml_data):
     return parsed_list
 
 def fetch_real_estate_data():
-    api_key = "a4f3a73ac43f647fef865da6213f51e91d7ccdb631a8ce07e04a258d3e2cadb8"
+    api_key = os.getenv("MOLIT_API_KEY")
     base_url = "http://apis.data.go.kr/1613000/RTMSDataSvcAptRent/getRTMSDataSvcAptRent"
     lawd_cd = "11110"   # 종로구
     deal_ymd = "202312" # 2023년 12월
@@ -46,7 +50,7 @@ def fetch_real_estate_data():
         
         if response.status_code == 200:
             parsed_data = parse_real_estate_xml(response.text)
-            print(f"✅ 총 {len(parsed_data)}건의 거래 데이터를 성공적으로 파싱했습니다.\n")
+            print(f"총 {len(parsed_data)}건의 거래 데이터를 성공적으로 파싱했습니다.\n")
             
             for i, data in enumerate(parsed_data[:3], 1):
                 print(f"[{i}] {data['building_name']} ({data['dong']})")
@@ -56,11 +60,11 @@ def fetch_real_estate_data():
             
             return parsed_data
         else:
-            print(f"❌ API 호출 실패 (상태 코드: {response.status_code})")
+            print(f"API 호출 실패 (상태 코드: {response.status_code})")
             return []
             
     except Exception as e:
-        print(f"❌ 데이터 파싱 에러: {e}")
+        print(f"데이터 파싱 에러: {e}")
         return []
 
 if __name__ == "__main__":
@@ -69,4 +73,4 @@ if __name__ == "__main__":
     
     if deals:
         saved_count = save_deals(deals)
-        print(f"💾 DB 저장 완료: 총 {saved_count}건이 rhc_database.db에 적재되었습니다.")
+        print(f"DB 저장 완료: 총 {saved_count}건이 rhc_database.db에 적재되었습니다.")
