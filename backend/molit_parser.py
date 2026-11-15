@@ -21,6 +21,8 @@ def parse_real_estate_xml(xml_data):
             "building_name": item.findtext("aptNm", "").strip(),
             "region_code": item.findtext("sggCd", "").strip(),
             "dong": item.findtext("umdNm", "").strip(),
+            "jibun": item.findtext("jibun", "").strip(),
+            "deposit": int(deposit_str) if deposit_str.isdigit() else 0,
             "deposit": int(deposit_str) if deposit_str.isdigit() else 0,
             "monthly_rent": int(monthly_rent_str) if monthly_rent_str.isdigit() else 0,
             "exclusive_area": float(area_str) if area_str else 0.0,
