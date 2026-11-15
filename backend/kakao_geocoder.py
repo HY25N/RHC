@@ -56,7 +56,7 @@ def update_db_coordinates(db_path = "rhc_database.db"):
 
     # 좌표가 없는 데이터 조회
     cursor.execute(""" 
-        SELECT id, dong, jibun, building_name
+        SELECT DISTINCT region_code,dong, jibun, building_name
         From real_estate_deals
         WHERE latitude IS NULL OR longitude IS NULL 
     """)
@@ -69,7 +69,7 @@ def update_db_coordinates(db_path = "rhc_database.db"):
 
     print(f"총 {len(rows)}건의 좌표 미등록 데이터 발견, 변활을 시작합니다...")
 
-    for row_id, dong, jibun, building_name in rows:
+    for region_code, dong, jibun, building_name in rows:
         # 건물명은 주소 검색(adress.json)에 안 잡히므로 '동 + 지번'으로 검색
         search_query = f"서울특별시 종로구 {dong}{jibun}"
         lat, lng = get_coordinates(search_query)
@@ -78,8 +78,8 @@ def update_db_coordinates(db_path = "rhc_database.db"):
             cursor.execute("""
                 UPDATE real_estate_deals
                 SET latitude = ?, longitude = ?
-                WHERE id = ?
-            """, (lat, lng, row_id))
+                WHERE region_code = ? AND dong = ? AND jibun = ? AND building_name = ?
+            """, (lat, lng, region_code, dong, jibun, building_name))
             print(f"[성공] {building_name} -> Lat: {lat}, Lng: {lng}")
         else:
             print(f"[실패] 좌표 변환 불가 : {building_name}")
