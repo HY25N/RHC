@@ -54,9 +54,7 @@ def save_deals(deals):
             d["exclusive_area"],
             d["deal_year"],
             d["deal_month"],
-            d["deal_day"],
-            d.get("latitude"),      # 좌표가 있으면 넣고 없으면 None
-            d.get("longitude")      # 좌표가 있으면 넣고 없으면 None
+            d["deal_day"]
         ) for d in deals
     ]
     
