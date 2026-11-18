@@ -41,7 +41,7 @@ def fetch_real_estate_data():
     api_key = os.getenv("MOLIT_API_KEY")
     base_url = "http://apis.data.go.kr/1613000/RTMSDataSvcAptRent/getRTMSDataSvcAptRent"
     lawd_cd = "11110"   # 종로구
-    deal_ymd = "202312" # 2023년 12월
+    deal_ymd = "202610" # 2026년 10월
     num_of_rows = 1000  # 한 페이지당 요청 건수 (미지정 시 API 기본값 10건)
 
     print("국토부 API 데이터 수집 및 파싱 시작...")
