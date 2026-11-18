@@ -9,8 +9,8 @@ def run_pipeline():
     
     deals = fetch_real_estate_data()
     if deals:
-        saved_count = save_deals(deals)
-        print(f"DB 저장 완료: 총 {saved_count}건 적재됨")
+        inserted = save_deals(deals)
+        print(f"DB 저장 완료: 신규 {inserted}건 적재, 총 {len(deals) - inserted}건 중복 스킵")
     else:
         print("수집된 데이터가 없습니다.")
     
