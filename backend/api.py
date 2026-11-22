@@ -41,3 +41,26 @@ def search_buildings(q: str = Query(..., min_length=1, description="건물명 �
     finally:
         conn.close()
     return [dict(r) for r in rows]
+
+@app.get("/deals")
+def building_deals(
+    region_code: str = Query(..., description="시군구 코드 (예: 11110)"),
+    dong: str = Query(..., description="동 이름"),
+    jibun: str = Query(..., description="지번"),
+    building_name: str = Query(..., description="건물명"),
+):
+    """건물 하나의 거래 목록 (최신 계약일 순). 건물은 /buildings 결과의 값으로 지정"""
+    sql = """
+        SELECT deal_type, deposit, monthly_rent, exclusive_area, floor,
+               deal_year, deal_month, deal_day
+        FROM real_estate_deals
+        WHERE region_code = ? AND dong = ? AND jibun = ? AND building_name = ?
+        ORDER BY deal_year DESC, deal_month DESC, deal_day DESC
+        LIMIT 200
+    """
+    conn = get_connection()
+    try:
+        rows = conn.execute(sql, (region_code, dong, jibun, building_name)).fetchall()
+    finally:
+        conn.close()
+    return [dict(r) for r in rows]
