@@ -20,24 +20,24 @@
 flowchart TB
     subgraph DONE["완료 (v0.1)"]
         direction LR
-        A["수집<br/>molit_parser"] --> B["저장<br/>database"] --> C["지오코딩<br/>kakao_geocoder"] --> D["파이프라인<br/>main.py"]
+        A["수집<br/>molit_parser"] --> B["저장<br/>database"] --> C["지오코딩<br/>kakao_geocoder"] --> D["파이프라인<br/>main.py"] --> E["조회 API<br/>FastAPI"]
     end
     subgraph TODO["예정"]
         direction LR
-        E["조회 API<br/>FastAPI"] --> F["프론트 연동"] --> G["지도 · 통근 시간"]
+        F["프론트 연동"] --> G["지도 · 통근 시간"]
     end
     DONE --> TODO
     classDef done fill:#d4edda,stroke:#1d7a46,color:#1f2933
     classDef todo fill:#ffffff,stroke:#829ab1,color:#1f2933
-    class A,B,C,D done
-    class E,F,G todo
+    class A,B,C,D,E done
+    class F,G todo
 ```
 
 - [x] 국토부 아파트 전월세 실거래 수집 (페이지네이션, 지번 포함)
 - [x] SQLite 저장, 재실행 시 중복 방지 (UNIQUE + INSERT OR IGNORE)
 - [x] 카카오 지오코딩 (동+지번 주소 검색, 건물 단위 1회 조회)
 - [x] 수집 → 저장 → 지오코딩 파이프라인 (`main.py`)
-- [ ] 조회 API (FastAPI): 건물 검색, 건물별 거래 조회
+- [x] 조회 API (FastAPI): 건물 검색, 건물별 거래 조회
 - [ ] 프론트 연동: 건물 선택 시 보증금·월세 자동 입력
 - [ ] 지도 표시, 통근 시간 계산 (직선 거리 추정 → 경로 API)
 - [ ] 안정성 보강, 데이터 확장(서울 전체), DB 정규화
@@ -86,6 +86,18 @@ python main.py
 - DB 파일(`rhc_database.db`)은 실행한 폴더에 만들어집니다.
 
 수집 대상은 현재 코드에 고정되어 있습니다. 바꾸려면 `backend/molit_parser.py`의 `lawd_cd`(시군구 코드, 기본 종로구 `11110`)와 `deal_ymd`(계약 연월)를 수정하세요. 지오코더의 주소 접두어(`서울특별시 종로구`)도 함께 바꿔야 합니다.
+
+### 4. 조회 API 서버 실행
+
+```bash
+python -m uvicorn api:app --reload
+```
+
+- `http://127.0.0.1:8000/docs`: API 문서 (직접 호출해 볼 수 있음)
+- `/buildings?q=건물명`: 건물명 검색 (예: `/buildings?q=경희궁`)
+- `/deals?region_code=…&dong=…&jibun=…&building_name=…`: 건물별 거래 조회
+
+서버를 켜기 전에 `python main.py`를 한 번 실행해서 DB(`rhc_database.db`)가 만들어져 있어야 합니다.
 
 ## 검증 결과
 
