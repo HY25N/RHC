@@ -17,15 +17,18 @@
 ## 진행 현황
 
 ```mermaid
-flowchart LR
-    A["수집<br/>molit_parser"] --> B["저장<br/>database"]
-    B --> C["지오코딩<br/>kakao_geocoder"]
-    C --> D["파이프라인<br/>main.py"]
-    D --> E["조회 API<br/>FastAPI"]
-    E --> F["프론트 연동"]
-    F --> G["지도 · 통근 시간"]
-    classDef done fill:#d4edda,stroke:#1d7a46
-    classDef todo fill:#ffffff,stroke:#829ab1,stroke-dasharray:4 3
+flowchart TB
+    subgraph DONE["완료 (v0.1)"]
+        direction LR
+        A["수집<br/>molit_parser"] --> B["저장<br/>database"] --> C["지오코딩<br/>kakao_geocoder"] --> D["파이프라인<br/>main.py"]
+    end
+    subgraph TODO["예정"]
+        direction LR
+        E["조회 API<br/>FastAPI"] --> F["프론트 연동"] --> G["지도 · 통근 시간"]
+    end
+    DONE --> TODO
+    classDef done fill:#d4edda,stroke:#1d7a46,color:#1f2933
+    classDef todo fill:#ffffff,stroke:#829ab1,color:#1f2933
     class A,B,C,D done
     class E,F,G todo
 ```
