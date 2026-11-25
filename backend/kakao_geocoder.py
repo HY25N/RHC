@@ -26,7 +26,7 @@ def get_coordinates(address):
     }
 
     try:
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, headers=headers, params=params, timeout=10)
         if response.status_code == 200:
             data = response.json()
             documents = data.get("documents")
