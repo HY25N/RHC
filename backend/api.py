@@ -2,8 +2,21 @@ import sqlite3
 from pathlib import Path
 
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="RHC API")
+
+# 로컬 개발용: 계산기 HTML을 Live Server로 열 때의 주소만 허용 (그 외 주소는 브라우저가 막음)
+ALLOWED_ORIGINS = [
+    "http://127.0.0.1:5500",
+    "http://localhost:5500",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_methods=["GET"],
+    allow_headers=["*"],
+)
 
 # DB 파일은 api.py와 같은 폴더(backend)의 것을 사용 (실행 위치와 무관)
 DB_PATH = Path(__file__).resolve().parent / "rhc_database.db"
